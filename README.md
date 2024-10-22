@@ -1,4 +1,4 @@
-# Tela de Login com React
+# Tela de login com react
 
 Este projeto é uma aplicação simples de tela de login, desenvolvida em React. A interface é moderna, responsiva, e utiliza validação de campos para garantir uma experiência de usuário eficiente.
 
