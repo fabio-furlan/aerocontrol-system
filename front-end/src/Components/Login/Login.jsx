@@ -13,7 +13,7 @@ const ENVIRONMENT = import.meta.env.PROD ? "Produção" : "Desenvolvimento"
 // Campos da API -> campos do formulário
 const FIELD_MAP = { baseCode: "base", login: "username", password: "password" }
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, notice = "" }) => {
 
     const [remembered] = useState(loadRememberedUser)
     const [bases, setBases] = useState([])
@@ -130,8 +130,10 @@ const Login = ({ onLogin }) => {
                     </div>
 
                     <div className='panel-body'>
-                        {formError && (
+                        {formError ? (
                             <div className='form-alert' role="alert">{formError}</div>
+                        ) : notice && (
+                            <div className='form-notice' role="status">{notice}</div>
                         )}
 
                         <div className={`field ${errors.base ? "has-error" : ""}`}>
@@ -243,6 +245,7 @@ const Login = ({ onLogin }) => {
 
 Login.propTypes = {
     onLogin: PropTypes.func.isRequired,
+    notice: PropTypes.string,
 }
 
 export default Login

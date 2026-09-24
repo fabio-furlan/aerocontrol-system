@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import Login from './Components/Login/Login'
-import Home from './Components/Home/Home'
+import AppShell from './Components/Shell/AppShell'
 import { fetchCurrentUser } from './services/api'
 import { clearSession, loadSession, saveSession } from './services/session'
 
@@ -10,6 +10,7 @@ function App() {
   // Sessão salva na aba: é revalidada na API antes de ser usada
   const [session, setSession] = useState(null)
   const [checking, setChecking] = useState(() => loadSession() !== null)
+  const [notice, setNotice] = useState("")
 
   useEffect(() => {
     const saved = loadSession()
@@ -25,9 +26,19 @@ function App() {
       .finally(() => setChecking(false))
   }, [])
 
+  const handleLogin = (newSession) => {
+    setNotice("")
+    setSession(newSession)
+  }
+
   const handleLogout = () => {
     clearSession()
     setSession(null)
+  }
+
+  const handleSessionExpired = () => {
+    handleLogout()
+    setNotice("Sua sessão expirou. Entre novamente para continuar.")
   }
 
   if (checking) return null
@@ -35,8 +46,8 @@ function App() {
   return (
     <div className="App">
       {session
-        ? <Home user={session.user} onLogout={handleLogout} />
-        : <Login onLogin={setSession} />}
+        ? <AppShell session={session} onLogout={handleLogout} onSessionExpired={handleSessionExpired} />
+        : <Login onLogin={handleLogin} notice={notice} />}
     </div>
   )
 }
