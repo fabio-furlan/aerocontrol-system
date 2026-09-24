@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Monograma FB (versão invertida para a aba do navegador) -->
+  <defs>
+    <clipPath id="c"><rect width="64" height="64" rx="9"/></clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <rect width="64" height="64" fill="#1f3a5f"/>
+    <rect y="54" width="64" height="5" fill="#e0a526"/>
+  </g>
+  <g transform="translate(11.6 8.8) scale(0.8)">
+    <polygon points="0,9 22,9 19,14 5,14 5,39 0,39" fill="#fff"/>
+    <polygon points="5,21 17,21 14,26 5,26" fill="#e0a526"/>
+    <path d="M30.5 9 V39 M28 11.5 H41 A6 6 0 0 1 41 23.5 H30.5 M30.5 23.5 H42 A6.5 6.5 0 0 1 42 36.5 H28" fill="none" stroke="#fff" stroke-width="5"/>
+  </g>
+</svg>
