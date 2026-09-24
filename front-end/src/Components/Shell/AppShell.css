@@ -1,0 +1,232 @@
+.shell {
+    --primary: #1f3a5f;
+    --primary-hover: #17304f;
+    --accent: #e0a526;
+    --text: #1b2430;
+    --muted: #5b6776;
+    --border: #d3dae3;
+    --focus: #2f6db5;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #eceff3;
+    color: var(--text);
+}
+
+/* ---------- Barra superior ---------- */
+
+.shell-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 64px;
+    padding: 0 24px;
+    background: var(--primary);
+    border-bottom: 3px solid var(--accent);
+    color: #fff;
+}
+
+.shell-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.shell-brand .logo-mark {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.shell-brand strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.shell-brand span {
+    display: block;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.shell-session {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+}
+
+.shell-session .clock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-variant-numeric: tabular-nums;
+}
+
+.shell-user {
+    padding-left: 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: right;
+}
+
+.shell-user strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.shell-user span {
+    display: block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-logout:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* ---------- Menu lateral e conteúdo ---------- */
+
+.shell-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.shell-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 210px;
+    flex-shrink: 0;
+    padding: 16px 10px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 12px;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    border-radius: 3px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.nav-item svg {
+    font-size: 17px;
+    color: var(--muted);
+}
+
+.nav-item:hover {
+    background: #f1f4f8;
+}
+
+.nav-item.active {
+    background: #e8eef6;
+    border-left-color: var(--primary);
+    font-weight: 600;
+}
+
+.nav-item.active svg {
+    color: var(--primary);
+}
+
+.nav-item:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+}
+
+.shell-content {
+    flex: 1;
+    min-width: 0;
+    padding: 28px 32px;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 900px) {
+    .shell-body {
+        flex-direction: column;
+    }
+
+    .shell-nav {
+        flex-direction: row;
+        width: auto;
+        padding: 8px 12px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+    }
+
+    .nav-item {
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        border-radius: 0;
+        white-space: nowrap;
+    }
+
+    .nav-item.active {
+        border-bottom-color: var(--primary);
+    }
+
+    .shell-content {
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 760px) {
+    .shell-topbar {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+    }
+
+    .shell-brand span,
+    .shell-session .clock {
+        display: none;
+    }
+
+    .shell-session {
+        gap: 12px;
+    }
+
+    .shell-user {
+        padding-left: 0;
+        border-left: none;
+        text-align: left;
+    }
+}
