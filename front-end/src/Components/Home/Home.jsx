@@ -4,6 +4,7 @@ import Logo from '../Shared/Logo'
 import BrasiliaClock from '../Shared/BrasiliaClock'
 import "./Home.css"
 
+<<<<<<< Updated upstream
 // Tela inicial após o login. Os módulos (aeronaves, OS, painel de saúde...) serão
 // adicionados aqui conforme as permissões do perfil.
 const Home = ({ user, onLogout }) => (
@@ -57,25 +58,27 @@ const Home = ({ user, onLogout }) => (
                 </section>
             </div>
         </main>
+=======
+// Página inicial após o login
+const Home = ({ user }) => (
+    <div className='home'>
+        <h1>Bem-vindo(a), {user.name.split(" ")[0]}</h1>
+        <p className='home-subtitle'>
+            Base {user.base.code} - {user.base.name} ({user.base.city}/{user.base.state})
+        </p>
+>>>>>>> Stashed changes
     </div>
 )
 
 Home.propTypes = {
     user: PropTypes.shape({
         name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        registration: PropTypes.string.isRequired,
-        roleLabel: PropTypes.string.isRequired,
         base: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
             city: PropTypes.string.isRequired,
             state: PropTypes.string.isRequired,
         }).isRequired,
-        permissions: PropTypes.arrayOf(PropTypes.shape({
-            code: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired,
-        })).isRequired,
     }).isRequired,
     onLogout: PropTypes.func.isRequired,
 }
