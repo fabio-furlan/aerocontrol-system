@@ -1,15 +1,18 @@
 import { FiHome, FiLogOut, FiUsers } from 'react-icons/fi'
+import { LuPlane } from 'react-icons/lu'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import Logo from '../Shared/Logo'
 import BrasiliaClock from '../Shared/BrasiliaClock'
 import Home from '../Home/Home'
 import UsersPage from '../Users/UsersPage'
+import AircraftPage from '../Aircraft/AircraftPage'
 import "./AppShell.css"
 
 // Itens do menu; os que exigem permissão só aparecem para quem a possui
 const NAV_ITEMS = [
     { id: "inicio", label: "Início", icon: FiHome },
+    { id: "aeronaves", label: "Aeronaves", icon: LuPlane, permission: "AERONAVE_VISUALIZAR" },
     { id: "usuarios", label: "Usuários", icon: FiUsers, permission: "USUARIO_GERENCIAR" },
 ]
 
@@ -60,6 +63,13 @@ const AppShell = ({ session, onLogout, onSessionExpired }) => {
 
                 <main className='shell-content'>
                     {page === "inicio" && <Home user={user} />}
+                    {page === "aeronaves" && (
+                        <AircraftPage
+                            token={token}
+                            canRegister={permissions.includes("AERONAVE_CADASTRAR")}
+                            onSessionExpired={onSessionExpired}
+                        />
+                    )}
                     {page === "usuarios" && (
                         <UsersPage
                             token={token}

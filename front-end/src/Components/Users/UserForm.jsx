@@ -1,7 +1,9 @@
 import { FiArrowLeft, FiCheck, FiMinus, FiEye, FiEyeOff } from 'react-icons/fi'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { createUser, updateUser } from '../../services/api'
+import { createUser, deleteUserPhoto, fetchUserPhoto, updateUser, uploadUserPhoto } from '../../services/api'
+import PhotoPicker from '../Shared/PhotoPicker'
+import { usePhotoField } from '../Shared/photo'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PASSWORD_POLICY = /^(?=.*[A-Za-z])(?=.*\d).{8,72}$/
@@ -34,6 +36,10 @@ const UserForm = ({ token, user, reference, currentUserId, onSaved, onCancel, on
     const [formError, setFormError] = useState("")
     const [saving, setSaving] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+
+    // Foto: a escolhida só é enviada (ou a atual removida) ao salvar o formulário
+    const photoField = usePhotoField(
+        () => fetchUserPhoto(token, user.id), isEdit && user.hasPhoto, onSessionExpired)
 
     const selectedRole = reference.roles.find((role) => role.code === form.role)
 
@@ -89,10 +95,14 @@ const UserForm = ({ token, user, reference, currentUserId, onSaved, onCancel, on
 
         setSaving(true)
         try {
-            const saved = isEdit
+            const data = isEdit
                 ? await updateUser(token, user.id, payload)
                 : await createUser(token, payload)
-            onSaved(saved, !isEdit)
+            const { saved, photoError } = await photoField.apply(data, {
+                upload: (id, file) => uploadUserPhoto(token, id, file),
+                remove: (id) => deleteUserPhoto(token, id),
+            })
+            onSaved(saved, !isEdit, photoError)
         } catch (error) {
             if (error.status === 401) {
                 onSessionExpired()
@@ -123,35 +133,49 @@ const UserForm = ({ token, user, reference, currentUserId, onSaved, onCancel, on
 
             <section className='form-card'>
                 <h2>Dados do colaborador</h2>
-                <div className='form-grid'>
-                    <div className={`${fieldClass("name")} span-2`}>
-                        <label htmlFor="name">Nome completo</label>
-                        <input id="name" value={form.name} maxLength={120}
-                            onChange={(e) => setField("name", e.target.value)}
-                            aria-invalid={!!errors.name} aria-describedby="name-error" />
-                        {errorText("name")}
+                {/* Campos à esquerda e foto do colaborador numa coluna à direita */}
+                <div className='form-with-photo portrait'>
+                    <div className='form-grid'>
+                        <div className={`${fieldClass("name")} span-2`}>
+                            <label htmlFor="name">Nome completo</label>
+                            <input id="name" value={form.name} maxLength={120}
+                                onChange={(e) => setField("name", e.target.value)}
+                                aria-invalid={!!errors.name} aria-describedby="name-error" />
+                            {errorText("name")}
+                        </div>
+                        <div className={fieldClass("email")}>
+                            <label htmlFor="email">E-mail corporativo</label>
+                            <input id="email" type="email" value={form.email} maxLength={160}
+                                onChange={(e) => setField("email", e.target.value)}
+                                aria-invalid={!!errors.email} aria-describedby="email-error" />
+                            {errorText("email")}
+                        </div>
+                        <div className={fieldClass("registration")}>
+                            <label htmlFor="registration">Matrícula</label>
+                            <input id="registration" value={form.registration} maxLength={20}
+                                onChange={(e) => setField("registration", e.target.value.toUpperCase())}
+                                aria-invalid={!!errors.registration} aria-describedby="registration-error" />
+                            {errorText("registration")}
+                        </div>
+                        <div className={fieldClass("licenseNumber")}>
+                            <label htmlFor="licenseNumber">Licença ANAC / CANAC <span className='optional'>(opcional)</span></label>
+                            <input id="licenseNumber" value={form.licenseNumber} maxLength={30}
+                                onChange={(e) => setField("licenseNumber", e.target.value)}
+                                aria-invalid={!!errors.licenseNumber} aria-describedby="licenseNumber-error" />
+                            {errorText("licenseNumber")}
+                        </div>
                     </div>
-                    <div className={fieldClass("email")}>
-                        <label htmlFor="email">E-mail corporativo</label>
-                        <input id="email" type="email" value={form.email} maxLength={160}
-                            onChange={(e) => setField("email", e.target.value)}
-                            aria-invalid={!!errors.email} aria-describedby="email-error" />
-                        {errorText("email")}
-                    </div>
-                    <div className={fieldClass("registration")}>
-                        <label htmlFor="registration">Matrícula</label>
-                        <input id="registration" value={form.registration} maxLength={20}
-                            onChange={(e) => setField("registration", e.target.value.toUpperCase())}
-                            aria-invalid={!!errors.registration} aria-describedby="registration-error" />
-                        {errorText("registration")}
-                    </div>
-                    <div className={fieldClass("licenseNumber")}>
-                        <label htmlFor="licenseNumber">Licença ANAC / CANAC <span className='optional'>(opcional)</span></label>
-                        <input id="licenseNumber" value={form.licenseNumber} maxLength={30}
-                            onChange={(e) => setField("licenseNumber", e.target.value)}
-                            aria-invalid={!!errors.licenseNumber} aria-describedby="licenseNumber-error" />
-                        {errorText("licenseNumber")}
-                    </div>
+                    <PhotoPicker
+                        id="photo"
+                        label="Foto do colaborador"
+                        photo={photoField.photo}
+                        alt={`Foto de ${form.name || "colaborador"}`}
+                        pending={photoField.pending}
+                        error={photoField.error}
+                        disabled={saving}
+                        onSelect={photoField.select}
+                        onRemove={photoField.remove}
+                    />
                 </div>
             </section>
 
@@ -266,6 +290,7 @@ UserForm.propTypes = {
         licenseNumber: PropTypes.string,
         role: PropTypes.string.isRequired,
         baseCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+        hasPhoto: PropTypes.bool.isRequired,
     }),
     reference: PropTypes.shape({
         roles: PropTypes.arrayOf(PropTypes.shape({

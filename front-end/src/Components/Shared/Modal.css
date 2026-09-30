@@ -1,0 +1,130 @@
+/* Modal de visualização (aeronaves, usuários): cabeçalho, corpo com foto e dados, rodapé */
+
+.modal {
+    width: min(720px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--primary);
+    border-radius: 4px;
+    color: var(--text);
+    box-shadow: 0 12px 40px rgba(15, 30, 50, 0.25);
+}
+
+.modal::backdrop {
+    background: rgba(15, 30, 50, 0.55);
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid #e8ecf1;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.modal-header p {
+    margin-top: 2px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.modal-close {
+    display: flex;
+    padding: 6px;
+    background: none;
+    border: none;
+    border-radius: 3px;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #f1f4f8;
+    color: var(--text);
+}
+
+.modal-close:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.modal-body {
+    padding: 20px 24px;
+}
+
+.details-list {
+    display: grid;
+    grid-template-columns: 150px 1fr 150px 1fr;
+    gap: 10px 16px;
+    font-size: 14px;
+}
+
+/* Foto em cima e dados embaixo (aeronave) */
+.modal-body > .photo-frame + .details-list {
+    margin-top: 20px;
+}
+
+/* Foto ao lado dos dados (pessoa, em formato retrato) */
+.modal-profile {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.modal-profile .photo-frame {
+    aspect-ratio: 3 / 4;
+}
+
+.modal-profile .details-list {
+    grid-template-columns: 130px 1fr;
+}
+
+.details-list dt {
+    color: var(--muted);
+}
+
+.details-list dd {
+    overflow-wrap: anywhere;
+}
+
+/* Só aparece para quem pode editar */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 14px 24px;
+    background: #f7f9fb;
+    border-top: 1px solid #e8ecf1;
+}
+
+@media (max-width: 760px) {
+    .details-list {
+        grid-template-columns: 130px 1fr;
+    }
+
+    .modal-profile {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-profile .photo-frame {
+        max-width: 200px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

@@ -1,0 +1,179 @@
+/* Foto de aeronaves e colaboradores: moldura, campo do formulário e layout */
+
+/* ---------- Moldura ---------- */
+
+.photo-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #eef1f5;
+    border: 1px solid #e3e8ee;
+    border-radius: 3px;
+}
+
+.photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.photo-placeholder svg {
+    font-size: 44px;
+    color: #aeb8c5;
+}
+
+/* ---------- Campo de foto no formulário ---------- */
+
+/* Formulário com foto: campos à esquerda, foto numa coluna à direita com a mesma altura */
+.form-with-photo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px 24px;
+    align-items: stretch;
+}
+
+.photo-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-with-photo .form-grid {
+    align-content: start;
+}
+
+/* Acompanha a altura dos campos ao lado */
+.photo-box {
+    position: relative;
+    flex: 1;
+    min-height: 120px;
+}
+
+/* A imagem preenche a área sem aumentar a altura do bloco */
+.photo-box .photo-preview {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+}
+
+.photo-drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    background: #f7f9fb;
+    border: 1px dashed #aeb8c5;
+    border-radius: 3px;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.photo-drop svg {
+    margin-bottom: 4px;
+    font-size: 24px;
+    color: #8a95a3;
+}
+
+.photo-drop strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--focus);
+}
+
+.photo-drop-hint {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.photo-drop:hover,
+.photo-box.dragging .photo-drop {
+    background: #eef3f9;
+    border-color: var(--primary);
+}
+
+.photo-drop:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.photo-field.has-error .photo-drop,
+.photo-field.has-error .photo-frame {
+    border-color: #b3261e;
+}
+
+/* Com foto: ações sobre a imagem, no canto inferior */
+.photo-overlay-actions {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    display: flex;
+    gap: 6px;
+}
+
+.photo-overlay-actions .btn {
+    box-shadow: 0 1px 3px rgba(15, 30, 50, 0.3);
+}
+
+.photo-pending {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 2px 8px;
+    background: rgba(31, 58, 95, 0.9);
+    border-radius: 3px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Foto de pessoa: coluna mais estreita, em formato retrato */
+.form-with-photo.portrait {
+    grid-template-columns: minmax(0, 1fr) 200px;
+}
+
+@media (max-width: 760px) {
+    .form-with-photo,
+    .form-with-photo.portrait {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Avatar (listas) ---------- */
+
+.avatar {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    background: #dde5ef;
+    border-radius: 50%;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
