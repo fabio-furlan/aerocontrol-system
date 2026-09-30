@@ -1,0 +1,51 @@
+/* Botões, filtros, tabela e formulário vêm de Users.css; aqui só o que é da frota */
+
+.users-table .num {
+    text-align: right;
+}
+
+/* Status da aeronave */
+.status-operacional {
+    background: #e3f2e8;
+    color: #1f5a37;
+}
+
+.status-em_manutencao {
+    background: #fdf3dc;
+    color: #7a5200;
+}
+
+.status-aog {
+    background: #fbe4e2;
+    color: #8c1d18;
+}
+
+.status-inativa {
+    background: #eceff3;
+    color: #5b6776;
+}
+
+/* Seleção no formulário, no mesmo padrão dos campos de texto */
+.form-field select {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    background: #fff;
+    border: 1px solid #aeb8c5;
+    border-radius: 3px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.form-field select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.form-field.has-error select {
+    border-color: #b3261e;
+    box-shadow: inset 0 0 0 1px #b3261e;
+}
