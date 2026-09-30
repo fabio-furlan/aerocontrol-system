@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -18,6 +20,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -238,5 +241,54 @@ class UserControllerTest {
         mvc.perform(get("/api/users/999999").header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Usuário não encontrado."));
+    }
+
+    // ---- foto do colaborador ----
+
+    /** Menor conteúdo aceito como JPEG: a assinatura do formato seguida de alguns bytes. */
+    private static final byte[] JPEG = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0, 0, 16};
+
+    private ResultActions uploadPhoto(String token, long id, byte[] data) throws Exception {
+        return mvc.perform(multipart(HttpMethod.PUT, "/api/users/" + id + "/photo")
+                .file(new MockMultipartFile("file", "foto.jpg", "image/jpeg", data))
+                .header("Authorization", "Bearer " + token));
+    }
+
+    @Test
+    void engenheiroEnviaERemoveAFotoDoColaborador() throws Exception {
+        long id = createdId(createUser(userJson("Bruno Dias", "bruno.dias@fbaero.dev", "MEC050", "MECANICO",
+                "\"SBGR\"", "Hangar2026")).andExpect(jsonPath("$.hasPhoto").value(false)));
+
+        uploadPhoto(adminToken, id, JPEG)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hasPhoto").value(true));
+        mvc.perform(get("/api/users/" + id + "/photo").header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("image/jpeg"))
+                .andExpect(content().bytes(JPEG));
+        mvc.perform(get("/api/users").param("search", "MEC050").header("Authorization", "Bearer " + adminToken))
+                .andExpect(jsonPath("$[0].hasPhoto").value(true));
+
+        mvc.perform(delete("/api/users/" + id + "/photo").header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hasPhoto").value(false));
+        mvc.perform(get("/api/users/" + id + "/photo").header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNotFound());
+
+        assertThat(auditLogRepository.findByActionOrderByOccurredAtDesc("USUARIO_FOTO_ALTERADA")).isNotEmpty();
+        assertThat(auditLogRepository.findByActionOrderByOccurredAtDesc("USUARIO_FOTO_REMOVIDA")).isNotEmpty();
+    }
+
+    @Test
+    void fotoDoColaboradorRecusaArquivoQueNaoEImagemEExigePermissao() throws Exception {
+        long id = createdId(createUser(userJson("Lia Nunes", "lia.nunes@fbaero.dev", "PIL050", "PILOTO",
+                "\"SBGR\"", "Pista2026")));
+
+        uploadPhoto(adminToken, id, "texto".getBytes()).andExpect(status().isUnsupportedMediaType());
+
+        String mechanicToken = loginToken("SBGR", "MEC001", PASSWORD);
+        uploadPhoto(mechanicToken, id, JPEG).andExpect(status().isForbidden());
+        mvc.perform(get("/api/users/" + id + "/photo").header("Authorization", "Bearer " + mechanicToken))
+                .andExpect(status().isForbidden());
     }
 }
