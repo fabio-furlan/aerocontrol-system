@@ -346,7 +346,7 @@
     box-shadow: inset 0 0 0 1px #b3261e;
 }
 
-.field-error {
+.login-page .field-error {
     margin-top: 5px;
     font-size: 13px;
     color: #b3261e;
@@ -356,7 +356,7 @@
     padding-right: 44px;
 }
 
-.toggle-password {
+.login-page .toggle-password {
     position: absolute;
     right: 6px;
     display: flex;
@@ -369,7 +369,7 @@
     cursor: pointer;
 }
 
-.toggle-password:hover {
+.login-page .toggle-password:hover {
     color: var(--text);
 }
 
@@ -411,7 +411,7 @@
     text-decoration: underline;
 }
 
-.link-button {
+.login-page .link-button {
     padding: 0;
     background: none;
     border: none;
@@ -426,7 +426,7 @@
     cursor: wait;
 }
 
-.btn-primary {
+.login-page .btn-primary {
     height: 46px;
     margin-top: 4px;
     background: var(--primary);
@@ -440,21 +440,21 @@
     transition: background 0.15s;
 }
 
-.btn-primary:hover {
+.login-page .btn-primary:hover {
     background: var(--primary-hover);
 }
 
-.btn-primary:disabled {
+.login-page .btn-primary:disabled {
     background: #5b7391;
     cursor: wait;
 }
 
-.btn-primary:active {
+.login-page .btn-primary:active {
     background: #10243d;
 }
 
-.btn-primary:focus-visible,
-.toggle-password:focus-visible,
+.login-page .btn-primary:focus-visible,
+.login-page .toggle-password:focus-visible,
 .link:focus-visible,
 .statusbar-link:focus-visible {
     outline: 2px solid var(--focus);
@@ -542,7 +542,7 @@
         font-size: 16px;
     }
 
-    .btn-primary {
+    .login-page .btn-primary {
         height: 50px;
         font-size: 16px;
     }
@@ -587,7 +587,7 @@
         height: 42px;
     }
 
-    .btn-primary {
+    .login-page .btn-primary {
         height: 44px;
     }
 

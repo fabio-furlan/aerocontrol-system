@@ -1,8 +1,10 @@
-import { FiPlus, FiSearch, FiEdit2 } from 'react-icons/fi'
+import { FiPlus, FiSearch, FiEdit2, FiEye } from 'react-icons/fi'
 import { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { changeUserStatus, fetchBases, fetchRoles, fetchUsers } from '../../services/api'
+import { changeUserStatus, fetchBases, fetchRoles, fetchUserPhoto, fetchUsers } from '../../services/api'
+import Avatar from '../Shared/Avatar'
 import UserForm from './UserForm'
+import UserDetailsModal from './UserDetailsModal'
 import ProfileSummary from './ProfileSummary'
 import "./Users.css"
 
@@ -27,17 +29,23 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
     const [confirmingId, setConfirmingId] = useState(null)
     const [rowError, setRowError] = useState(null)
     const [flash, setFlash] = useState("")
+    const [viewing, setViewing] = useState(null)       // usuário aberto no modal
+    const [photoWarning, setPhotoWarning] = useState("")
 
     const handleError = useCallback((error, setMessage) => {
         if (error.status === 401) onSessionExpired()
         else setMessage(error.message)
     }, [onSessionExpired])
 
+    // Muda a cada carga da lista, para os avatares buscarem a foto de novo (ela pode ter sido trocada)
+    const [loadCount, setLoadCount] = useState(0)
+
     const loadUsers = useCallback(() => {
         setStatus("loading")
         fetchUsers(token, filters)
             .then((data) => {
                 setUsers(data)
+                setLoadCount((n) => n + 1)
                 setStatus("ready")
             })
             .catch((error) => {
@@ -74,10 +82,17 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
         }
     }
 
-    const handleSaved = (saved, created) => {
+    // Os dados podem ter sido salvos mesmo que o envio da foto tenha falhado
+    const handleSaved = (saved, created, photoError) => {
         setEditing(null)
         setFlash(created ? `Usuário ${saved.name} cadastrado com sucesso.` : `Dados de ${saved.name} atualizados.`)
+        setPhotoWarning(photoError ? `A foto não foi salva: ${photoError} Tente novamente em Editar.` : "")
         loadUsers()
+    }
+
+    const clearMessages = () => {
+        setFlash("")
+        setPhotoWarning("")
     }
 
     if (editing) {
@@ -104,7 +119,7 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
                 <button
                     type="button"
                     className='btn btn-primary'
-                    onClick={() => { setFlash(""); setEditing({ user: null }) }}
+                    onClick={() => { clearMessages(); setEditing({ user: null }) }}
                     disabled={!reference}
                 >
                     <FiPlus /> Novo usuário
@@ -114,6 +129,7 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
             {currentUser.role === ADMIN_ROLE && <ProfileSummary user={currentUser} />}
 
             {flash && <div className='alert alert-success' role="status">{flash}</div>}
+            {photoWarning && <div className='alert alert-error' role="alert">{photoWarning}</div>}
 
             <div className='filters'>
                 <label className='filter-search'>
@@ -177,8 +193,19 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
                                     return (
                                         <tr key={user.id} className={user.active ? "" : "inactive"}>
                                             <td>
-                                                <strong>{user.name}</strong>
-                                                <span className='cell-sub'>{user.email}</span>
+                                                <div className='user-cell'>
+                                                    <Avatar
+                                                        key={`${user.id}-${loadCount}`}
+                                                        name={user.name}
+                                                        hasPhoto={user.hasPhoto}
+                                                        load={() => fetchUserPhoto(token, user.id)}
+                                                        onSessionExpired={onSessionExpired}
+                                                    />
+                                                    <div>
+                                                        <strong>{user.name}</strong>
+                                                        <span className='cell-sub'>{user.email}</span>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className='mono'>{user.registration}</td>
                                             <td>{user.roleLabel}</td>
@@ -203,7 +230,15 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
                                                         <button
                                                             type="button"
                                                             className='btn btn-small'
-                                                            onClick={() => { setFlash(""); setEditing({ user }) }}
+                                                            onClick={() => setViewing(user)}
+                                                            aria-label={`Visualizar ${user.name}`}
+                                                        >
+                                                            <FiEye /> Visualizar
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className='btn btn-small'
+                                                            onClick={() => { clearMessages(); setEditing({ user }) }}
                                                             disabled={!reference}
                                                         >
                                                             <FiEdit2 /> Editar
@@ -231,6 +266,18 @@ const UsersPage = ({ token, currentUser, onSessionExpired }) => {
                     </div>
                 )}
             </div>
+
+            {viewing && (
+                <UserDetailsModal
+                    token={token}
+                    user={viewing}
+                    bases={reference?.bases}
+                    onClose={() => setViewing(null)}
+                    onEdit={() => { clearMessages(); setEditing({ user: viewing }); setViewing(null) }}
+                    editDisabled={!reference}
+                    onSessionExpired={onSessionExpired}
+                />
+            )}
 
             {status === "ready" && (
                 <p className='table-count'>{users.length} {users.length === 1 ? "usuário" : "usuários"}</p>

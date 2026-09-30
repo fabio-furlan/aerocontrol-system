@@ -233,6 +233,18 @@
     color: #7d8896;
 }
 
+/* Nome com a foto (avatar) ao lado */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Uma base por linha no modal de visualização */
+.base-line {
+    display: block;
+}
+
 .cell-sub {
     display: block;
     font-size: 12.5px;
@@ -314,8 +326,9 @@
 
 /* ---------- Formulário ---------- */
 
+/* Ocupa a largura da área de conteúdo, como as listas (usado nos formulários de usuário e aeronave) */
 .user-form {
-    max-width: 960px;
+    width: 100%;
 }
 
 .back-link {
@@ -371,7 +384,8 @@
     border: none;
 }
 
-.form-field > label,
+/* Rótulo do campo; as opções de perfil (.role-option) têm estilo próprio */
+.form-field > label:not(.role-option),
 .form-field > legend {
     display: block;
     margin-bottom: 6px;
