@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,6 +51,12 @@ public class ApiExceptionHandler {
     ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
         return ResponseEntity.badRequest()
                 .body(ApiError.of(HttpStatus.BAD_REQUEST, "Valor inválido para o parâmetro '" + e.getName() + "'."));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiError> handleUploadTooLarge(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(ApiError.of(HttpStatus.PAYLOAD_TOO_LARGE, "O arquivo enviado é maior que o permitido (5 MB)."));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
