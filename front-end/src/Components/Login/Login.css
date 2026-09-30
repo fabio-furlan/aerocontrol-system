@@ -260,6 +260,18 @@
     color: #8c1d18;
 }
 
+/* Aviso informativo (ex.: sessão expirada) */
+.form-notice {
+    padding: 10px 12px;
+    background: #fdf6e6;
+    border: 1px solid #ecd49a;
+    border-left: 4px solid var(--accent);
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #6b4c00;
+}
+
 .field label {
     display: block;
     margin-bottom: 6px;
