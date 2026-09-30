@@ -3,7 +3,11 @@ import { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { changeUserStatus, fetchBases, fetchRoles, fetchUsers } from '../../services/api'
 import UserForm from './UserForm'
+import ProfileSummary from './ProfileSummary'
 import "./Users.css"
+
+// Perfil de administrador: único que vê o resumo da sessão e das permissões
+const ADMIN_ROLE = "ENGENHEIRO"
 
 const dateTime = new Intl.DateTimeFormat("pt-BR", {
     timeZone: "America/Sao_Paulo",
@@ -11,7 +15,8 @@ const dateTime = new Intl.DateTimeFormat("pt-BR", {
     timeStyle: "short",
 })
 
-const UsersPage = ({ token, currentUserId, onSessionExpired }) => {
+const UsersPage = ({ token, currentUser, onSessionExpired }) => {
+    const currentUserId = currentUser.id
     const [users, setUsers] = useState([])
     const [status, setStatus] = useState("loading")
     const [loadError, setLoadError] = useState("")
@@ -105,6 +110,8 @@ const UsersPage = ({ token, currentUserId, onSessionExpired }) => {
                     <FiPlus /> Novo usuário
                 </button>
             </div>
+
+            {currentUser.role === ADMIN_ROLE && <ProfileSummary user={currentUser} />}
 
             {flash && <div className='alert alert-success' role="status">{flash}</div>}
 
@@ -234,7 +241,10 @@ const UsersPage = ({ token, currentUserId, onSessionExpired }) => {
 
 UsersPage.propTypes = {
     token: PropTypes.string.isRequired,
-    currentUserId: PropTypes.number.isRequired,
+    currentUser: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        role: PropTypes.string.isRequired,
+    }).isRequired,
     onSessionExpired: PropTypes.func.isRequired,
 }
 
