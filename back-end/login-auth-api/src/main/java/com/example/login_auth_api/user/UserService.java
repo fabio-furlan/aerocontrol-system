@@ -6,8 +6,11 @@ import com.example.login_auth_api.domain.base.Base;
 import com.example.login_auth_api.domain.base.BaseRepository;
 import com.example.login_auth_api.domain.user.Role;
 import com.example.login_auth_api.domain.user.User;
+import com.example.login_auth_api.domain.user.UserPhoto;
+import com.example.login_auth_api.domain.user.UserPhotoRepository;
 import com.example.login_auth_api.domain.user.UserRepository;
 import com.example.login_auth_api.exception.ApiException;
+import com.example.login_auth_api.photo.PhotoUpload;
 import com.example.login_auth_api.user.UserDtos.UserRequest;
 import com.example.login_auth_api.user.UserDtos.UserResponse;
 import org.springframework.data.domain.Sort;
@@ -15,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,15 +38,18 @@ public class UserService {
     private static final String ENTITY = "USER";
 
     private final UserRepository userRepository;
+    private final UserPhotoRepository photoRepository;
     private final BaseRepository baseRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuditService auditService;
 
     public UserService(UserRepository userRepository,
+                       UserPhotoRepository photoRepository,
                        BaseRepository baseRepository,
                        PasswordEncoder passwordEncoder,
                        AuditService auditService) {
         this.userRepository = userRepository;
+        this.photoRepository = photoRepository;
         this.baseRepository = baseRepository;
         this.passwordEncoder = passwordEncoder;
         this.auditService = auditService;
@@ -50,13 +57,14 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> list(String search, Role role, Boolean active) {
+        Set<Long> withPhoto = photoRepository.findUserIdsWithPhoto();
         return userRepository.findAll(UserSpecifications.matches(search, role, active), Sort.by("name"))
-                .stream().map(UserResponse::from).toList();
+                .stream().map(u -> UserResponse.from(u, withPhoto.contains(u.getId()))).toList();
     }
 
     @Transactional(readOnly = true)
     public UserResponse get(Long id) {
-        return UserResponse.from(find(id));
+        return response(find(id));
     }
 
     @Transactional
@@ -81,7 +89,7 @@ public class UserService {
         auditService.record(actor.getId(), AuditAction.USUARIO_CRIADO, ENTITY, user.getId(),
                 "matrícula=" + user.getRegistration() + "; perfil=" + user.getRole()
                         + "; bases=" + codes(user.getBases()), ip);
-        return UserResponse.from(user);
+        return UserResponse.from(user, false);
     }
 
     @Transactional
@@ -126,14 +134,14 @@ public class UserService {
             user.setPasswordHash(passwordEncoder.encode(request.password()));
             auditService.record(actor.getId(), AuditAction.SENHA_REDEFINIDA, ENTITY, user.getId(), null, ip);
         }
-        return UserResponse.from(user);
+        return response(user);
     }
 
     @Transactional
     public UserResponse changeStatus(Long id, boolean active, User actor, String ip) {
         User user = find(id);
         if (user.isActive() == active) {
-            return UserResponse.from(user);
+            return response(user);
         }
         if (!active) {
             if (user.getId().equals(actor.getId())) {
@@ -147,7 +155,42 @@ public class UserService {
         user.setActive(active);
         auditService.record(actor.getId(), active ? AuditAction.USUARIO_ATIVADO : AuditAction.USUARIO_DESATIVADO,
                 ENTITY, user.getId(), null, ip);
-        return UserResponse.from(user);
+        return response(user);
+    }
+
+    // ---- foto ----
+
+    @Transactional(readOnly = true)
+    public UserPhoto getPhoto(Long id) {
+        find(id);
+        return photoRepository.findById(id)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Este usuário não tem foto cadastrada."));
+    }
+
+    /** Envia ou substitui a foto do colaborador. */
+    @Transactional
+    public UserResponse savePhoto(Long id, MultipartFile file, User actor, String ip) {
+        User user = find(id);
+        PhotoUpload upload = PhotoUpload.from(file);
+
+        photoRepository.findById(id).ifPresentOrElse(
+                photo -> photo.replace(upload.contentType(), upload.data()),
+                () -> photoRepository.save(new UserPhoto(id, upload.contentType(), upload.data())));
+
+        auditService.record(actor.getId(), AuditAction.USUARIO_FOTO_ALTERADA, ENTITY, id,
+                "matrícula=" + user.getRegistration() + "; " + upload.describe(), ip);
+        return UserResponse.from(user, true);
+    }
+
+    @Transactional
+    public UserResponse deletePhoto(Long id, User actor, String ip) {
+        User user = find(id);
+        if (photoRepository.existsById(id)) {
+            photoRepository.deleteById(id);
+            auditService.record(actor.getId(), AuditAction.USUARIO_FOTO_REMOVIDA, ENTITY, id,
+                    "matrícula=" + user.getRegistration(), ip);
+        }
+        return UserResponse.from(user, false);
     }
 
     // ---- regras e validações ----
@@ -183,6 +226,10 @@ public class UserService {
         if (user.isActive() && userRepository.countByRoleAndActiveTrue(Role.ENGENHEIRO) <= 1) {
             throw conflict("O sistema precisa de ao menos um Engenheiro / Administrador ativo.");
         }
+    }
+
+    private UserResponse response(User user) {
+        return UserResponse.from(user, photoRepository.existsById(user.getId()));
     }
 
     private User find(Long id) {

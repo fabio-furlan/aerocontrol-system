@@ -66,9 +66,10 @@ public final class UserDtos {
             List<String> baseCodes,
             boolean active,
             Instant lastLoginAt,
-            Instant createdAt) {
+            Instant createdAt,
+            boolean hasPhoto) {
 
-        public static UserResponse from(User user) {
+        public static UserResponse from(User user, boolean hasPhoto) {
             return new UserResponse(
                     user.getId(),
                     user.getName(),
@@ -80,7 +81,8 @@ public final class UserDtos {
                     user.getBases().stream().map(Base::getCode).sorted().toList(),
                     user.isActive(),
                     user.getLastLoginAt(),
-                    user.getCreatedAt());
+                    user.getCreatedAt(),
+                    hasPhoto);
         }
     }
 
