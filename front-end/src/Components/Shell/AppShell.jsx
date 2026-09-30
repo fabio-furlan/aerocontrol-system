@@ -63,7 +63,7 @@ const AppShell = ({ session, onLogout, onSessionExpired }) => {
                     {page === "usuarios" && (
                         <UsersPage
                             token={token}
-                            currentUserId={user.id}
+                            currentUser={user}
                             onSessionExpired={onSessionExpired}
                         />
                     )}
