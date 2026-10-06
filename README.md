@@ -69,7 +69,7 @@ cd back-end/login-auth-api
 > No Windows (PowerShell ou CMD), use `.\mvnw spring-boot:run`.
 
 A API sobe em `http://localhost:8081` e leva alguns segundos. Aguarde a mensagem
-`Started LoginAuthApiApplication` no terminal. Na primeira execução, o Flyway cria as tabelas
+`Started AeroControlApplication` no terminal. Na primeira execução, o Flyway cria as tabelas
 e são criados os usuários de demonstração.
 
 ### 3. Iniciar o front-end (terminal 2)

@@ -8,11 +8,11 @@
 		<version>4.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>login-auth-api</artifactId>
+	<groupId>br.com.aerocontrol</groupId>
+	<artifactId>aerocontrol-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>aerocontrol-api</name>
+	<description>API do AeroControl - gestão de manutenção aeronáutica</description>
 	<url/>
 	<licenses>
 		<license/>
