@@ -3,7 +3,7 @@
 Sistema de Gestão de Manutenção Aeronáutica (MRO) para engenheiros, mecânicos e pilotos: controle de TBO,
 rastreabilidade de componentes, ordens de serviço e log de auditoria imutável.
 
-> **Status:** em desenvolvimento. Login com perfis de acesso e estrutura do banco de dados concluídos.
+> **Status:** em desenvolvimento. Login com perfis de acesso, cadastro de usuários e cadastro de aeronaves concluídos.
 
 ## Funcionalidades
 
@@ -12,14 +12,18 @@ rastreabilidade de componentes, ordens de serviço e log de auditoria imutável.
 - Login por matrícula ou e-mail, com seleção da base de operação (ex.: SBGR, SBKP, SBCF)
 - Autenticação com token JWT e sessão de 8 horas (um turno de trabalho)
 - Perfis de acesso com permissões: Engenheiro / Administrador, Mecânico / Técnico e Piloto / Operador
-- Log de auditoria imutável: logins e tentativas negadas ficam registrados
-- Estrutura completa do banco para o MVP, versionada com Flyway
+- Cadastro de usuários (colaboradores): criação, edição, ativação/desativação, redefinição de senha,
+  bases autorizadas e busca com filtros por perfil e situação
+- Cadastro de aeronaves: matrícula, modelo, fabricante, número de série, base, horas de voo, ciclos e status
+  (Operacional, Em manutenção, AOG - Parada, Inativa)
+- Fotos de aeronaves e de colaboradores (JPG, PNG ou WebP, até 5 MB)
+- Log de auditoria imutável: logins, tentativas negadas e alterações em usuários, aeronaves e fotos
+- Estrutura do banco versionada com Flyway
 - Interface responsiva (celular, tablet, notebook e monitores grandes)
 
 **Próximas etapas (MVP)**
 
-- Cadastro de usuários e permissões de acesso
-- Cadastro de aeronaves e de componentes controlados (motores, trens de pouso, aviônicos) com limite de TBO
+- Cadastro de componentes controlados (motores, trens de pouso, aviônicos) com limite de TBO
 - Painel de saúde das peças: status *Warning* ao restar menos de 10% das horas até o TBO e *Critical* ao atingi-lo
 - Ordens de Serviço (Aberta, Em andamento, Concluída) com registro de trocas de peças
 - Registro de horas de voo, atualizando o desgaste das peças automaticamente
@@ -41,6 +45,35 @@ aerocontrol-system/
 │   └── src/main/resources/db/migration/   # scripts do banco (Flyway)
 └── front-end/                 # Interface web (React + Vite)
 ```
+
+### Organização da API
+
+A API é um **monólito modular**: uma única aplicação Spring Boot, dividida em módulos de negócio
+independentes (pacote raiz `br.com.aerocontrol`).
+
+```
+br.com.aerocontrol/
+├── shared/       # recursos comuns: auditoria, tratamento de erros, upload de fotos
+├── security/     # JWT, filtro de autenticação e configuração do Spring Security
+├── auth/         # login e sessão
+├── base/         # bases de manutenção (SBGR, SBKP, SBCF...)
+├── user/         # usuários (colaboradores) e perfis de acesso
+└── aircraft/     # aeronaves
+```
+
+Cada módulo segue as mesmas camadas:
+
+| Camada | Conteúdo |
+|---|---|
+| `api/` | Controllers REST: recebem e devolvem DTOs, sem regra de negócio |
+| `application/` | Services (regras de negócio e transações) e DTOs |
+| `domain/` | Entidades JPA e repositórios |
+
+Regras:
+
+- Um módulo nunca acessa o repositório de outro; usa o service público dele (ex.: `BaseService`).
+- `shared/` guarda apenas infraestrutura comum, nunca regra de negócio.
+- Um novo domínio (ex.: componentes, ordens de serviço) vira um novo módulo com as mesmas camadas.
 
 ## Como rodar
 
@@ -136,5 +169,7 @@ No front-end, defina `VITE_API_URL` com o endereço da API publicada (veja `fron
 
 - `main`: versões estáveis
 - `develop`: integração das novas funcionalidades
-- `feature/*`: uma branch por funcionalidade, integrada à `develop` via Pull Request
+- `feature/*` (ou `refactor/*`, `fix/*`): uma branch por alteração, criada a partir da `develop`
+  e integrada a ela via Pull Request
+- Quando a `develop` estiver estável, um Pull Request `develop` → `main` publica a nova versão
 - Commits no padrão [Conventional Commits](https://www.conventionalcommits.org/pt-br/) (ex.: `feat(back): ...`)
