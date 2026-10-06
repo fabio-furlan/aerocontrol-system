@@ -37,7 +37,7 @@ rastreabilidade de componentes, ordens de serviço e log de auditoria imutável.
 
 ```
 aerocontrol-system/
-├── back-end/login-auth-api/   # API REST (Spring Boot)
+├── back-end/aerocontrol-api/  # API REST (Spring Boot)
 │   └── src/main/resources/db/migration/   # scripts do banco (Flyway)
 └── front-end/                 # Interface web (React + Vite)
 ```
@@ -62,7 +62,7 @@ cd aerocontrol-system
 ### 2. Iniciar a API (terminal 1)
 
 ```bash
-cd back-end/login-auth-api
+cd back-end/aerocontrol-api
 ./mvnw spring-boot:run
 ```
 
@@ -100,13 +100,13 @@ Para ver o bloqueio por base, tente entrar com `PIL001` na base SBKP.
 ### Rodar os testes
 
 ```bash
-cd back-end/login-auth-api
+cd back-end/aerocontrol-api
 ./mvnw test
 ```
 
 ### Recomeçar o banco local do zero
 
-Pare a API e apague a pasta `back-end/login-auth-api/data/`. Na próxima execução o banco é recriado.
+Pare a API e apague a pasta `back-end/aerocontrol-api/data/`. Na próxima execução o banco é recriado.
 
 ## Perfis de acesso
 
