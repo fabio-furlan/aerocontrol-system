@@ -1,0 +1,626 @@
+.login-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    color: var(--color-text);
+    isolation: isolate;
+}
+
+/* Foto em tela cheia, escurecida para dar leitura ao painel */
+.login-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(90deg, rgba(12, 22, 36, 0.35) 0%, rgba(12, 22, 36, 0.55) 55%, rgba(12, 22, 36, 0.8) 100%),
+        linear-gradient(180deg, rgba(12, 22, 36, 0.6) 0%, transparent 18%, transparent 85%, rgba(12, 22, 36, 0.7) 100%),
+        url("@/assets/images/turbina.jpg") left center / cover no-repeat;
+    filter: saturate(0.75);
+}
+
+/* ---------- Barra superior ---------- */
+
+.topbar,
+.login-main,
+.statusbar {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 64px;
+    padding: 0 32px;
+    color: #fff;
+}
+
+.topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.topbar-brand strong {
+    display: block;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+}
+
+.topbar-brand span {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.topbar-info {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 18px;
+    font-size: var(--font-size-sm);
+}
+
+.env-badge {
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.env-badge.prod {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.env-badge.dev {
+    background: var(--color-accent);
+    color: var(--color-text);
+}
+
+/* ---------- Painel de login ---------- */
+
+.login-main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 48px;
+    padding: 32px;
+}
+
+/* ---------- Frase institucional ---------- */
+
+.hero {
+    max-width: 620px;
+    color: #fff;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+
+.hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-accent);
+}
+
+.hero-eyebrow::before {
+    content: "";
+    width: 32px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-accent);
+}
+
+.hero h2 {
+    margin-top: 18px;
+    line-height: 1.12;
+    letter-spacing: -0.5px;
+}
+
+.hero h2 span {
+    display: block;
+    font-size: clamp(22px, 2.2vw, 34px);
+    font-weight: var(--font-weight-regular);
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.hero h2 strong {
+    display: block;
+    font-size: clamp(28px, 3vw, 46px);
+    white-space: nowrap;
+    font-weight: var(--font-weight-bold);
+}
+
+.hero p {
+    max-width: 440px;
+    margin-top: 20px;
+    padding-left: 16px;
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+    list-style: none;
+}
+
+.hero-tags li {
+    padding: 6px 12px;
+    background: rgba(12, 22, 36, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 4px;
+    font-size: 12.5px;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.4px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+}
+
+.login-panel {
+    justify-self: end;
+    width: 100%;
+    max-width: 520px;
+    margin-right: clamp(0px, 4vw, 96px);
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 4px solid var(--color-primary);
+    border-radius: 4px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.panel-header {
+    padding: 28px 40px 0;
+}
+
+.panel-header h1 {
+    margin-top: 6px;
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    color: var(--color-text);
+}
+
+.panel-header p {
+    margin-top: 6px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-divider);
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
+}
+
+.panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px 40px 28px;
+}
+
+.login-panel .alert {
+    margin-bottom: 0;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+}
+
+.control {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.control-chevron {
+    position: absolute;
+    right: 12px;
+    font-size: 17px;
+    color: var(--color-text-muted);
+    pointer-events: none;
+}
+
+.control input,
+.control select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 3px;
+    color: var(--color-text);
+    font-size: var(--font-size-lg);
+}
+
+.control select {
+    padding-right: 38px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.control select.is-placeholder {
+    color: var(--color-text-subtle);
+}
+
+.control select option {
+    color: var(--color-text);
+}
+
+.control input::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.control input:hover,
+.control select:hover {
+    border-color: var(--color-text-subtle);
+}
+
+/* Foco: borda reforçada, sem halo */
+.control input:focus,
+.control select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+/* Estado de erro */
+.field.has-error .control input,
+.field.has-error .control select {
+    border-color: var(--color-danger);
+    box-shadow: inset 0 0 0 1px var(--color-danger);
+}
+
+.control #password {
+    padding-right: 44px;
+}
+
+/* Mostrar/ocultar senha, dentro do campo */
+.control .icon-button {
+    position: absolute;
+    right: 6px;
+}
+
+.caps-warning {
+    margin-top: 5px;
+    font-size: var(--font-size-sm);
+    color: #8a5a00;
+}
+
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-size-md);
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text);
+    cursor: pointer;
+    user-select: none;
+}
+
+.remember input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.link {
+    color: var(--color-focus);
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.control select:disabled {
+    background: #f1f3f6;
+    cursor: wait;
+}
+
+.login-submit {
+    margin-top: 4px;
+}
+
+.link:focus-visible,
+.statusbar-link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+.panel-notice {
+    padding: 14px 40px;
+    border-top: 1px solid var(--color-divider);
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    color: var(--color-text-muted);
+}
+
+/* ---------- Barra de status ---------- */
+
+.statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 44px;
+    padding: 0 32px;
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.statusbar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.statusbar-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Responsivo ---------- */
+
+/* Monitores grandes (Full HD+ e ultrawide) */
+@media (min-width: 1800px) {
+    .topbar {
+        height: 72px;
+    }
+
+    .topbar-brand strong {
+        font-size: 17px;
+    }
+
+    .topbar-brand span,
+    .topbar-info {
+        font-size: 14px;
+    }
+
+    .hero {
+        max-width: 700px;
+    }
+
+    .hero h2 span {
+        font-size: 38px;
+    }
+
+    .hero h2 strong {
+        font-size: 54px;
+    }
+
+    .hero p {
+        max-width: 500px;
+        font-size: 19px;
+    }
+
+    .login-panel {
+        max-width: 580px;
+    }
+
+    .panel-header h1 {
+        font-size: 28px;
+    }
+
+    .control input,
+    .control select {
+        height: 48px;
+        font-size: 16px;
+    }
+
+    .login-submit {
+        height: 50px;
+        font-size: var(--font-size-xl);
+    }
+
+    .statusbar {
+        height: 50px;
+        font-size: 13.5px;
+    }
+}
+
+/* Notebooks com pouca altura (1366x768, 1280x720) */
+@media (max-height: 820px) and (min-width: 1025px) {
+    .topbar {
+        height: 56px;
+    }
+
+    .statusbar {
+        height: 38px;
+    }
+
+    .login-main {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    .panel-header {
+        padding-top: 22px;
+    }
+
+    .panel-header p {
+        padding-bottom: 16px;
+    }
+
+    .panel-body {
+        gap: 14px;
+        padding-top: 18px;
+        padding-bottom: 22px;
+    }
+
+    .control input,
+    .control select {
+        height: 42px;
+    }
+
+    .login-submit {
+        height: 44px;
+    }
+
+    .panel-notice {
+        padding-top: 11px;
+        padding-bottom: 11px;
+    }
+
+    .hero-tags {
+        margin-top: 20px;
+    }
+}
+
+/* Tablets e notebooks estreitos: frase acima do painel */
+@media (max-width: 1024px) {
+    .login-page::before {
+        background:
+            linear-gradient(rgba(12, 22, 36, 0.62), rgba(12, 22, 36, 0.72)),
+            url("@/assets/images/turbina.jpg") 30% center / cover no-repeat;
+    }
+
+    .login-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        padding: 24px;
+    }
+
+    .hero {
+        max-width: 560px;
+        text-align: center;
+    }
+
+    .hero-eyebrow {
+        justify-content: center;
+    }
+
+    .hero h2 {
+        margin-top: 12px;
+    }
+
+    .hero h2 span {
+        font-size: 24px;
+    }
+
+    .hero h2 strong {
+        font-size: 34px;
+        white-space: normal;
+    }
+
+    .hero p,
+    .hero-tags {
+        display: none;
+    }
+
+    .login-panel {
+        max-width: 480px;
+        margin-right: 0;
+    }
+
+    /* Evita zoom automático ao tocar no campo (iOS) */
+    .control input,
+    .control select {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+    .topbar {
+        height: 56px;
+        padding: 0 16px;
+    }
+
+    .logo-mark {
+        width: 32px;
+        height: 32px;
+    }
+
+    .topbar-brand strong {
+        font-size: var(--font-size-md);
+    }
+
+    .topbar-brand span,
+    .clock {
+        display: none;
+    }
+
+    .env-badge {
+        padding: 3px 7px;
+        font-size: var(--font-size-2xs);
+        letter-spacing: 0.4px;
+    }
+
+    .login-main {
+        gap: 20px;
+        padding: 16px;
+    }
+
+    .hero {
+        display: none;
+    }
+
+    .panel-header {
+        padding: 22px 20px 0;
+    }
+
+    .panel-header h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .panel-body {
+        gap: 16px;
+        padding: 20px 20px 24px;
+    }
+
+    .panel-notice {
+        padding: 12px 20px;
+    }
+
+    .statusbar {
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        height: auto;
+        padding: 12px 16px;
+        font-size: var(--font-size-xs);
+        text-align: center;
+    }
+}
+
+/* Celulares pequenos */
+@media (max-width: 380px) {
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
