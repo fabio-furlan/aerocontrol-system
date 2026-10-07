@@ -6,6 +6,7 @@ import {
 } from '../../services/api'
 import PhotoPicker from '../Shared/PhotoPicker'
 import { usePhotoField } from '../Shared/photo'
+import ConfirmChangesModal from './ConfirmChangesModal'
 
 // Mesmo formato aceito pela API: prefixo + marcas, com ou sem hífen (PR-FBA, N123AB)
 const REGISTRATION_FORMAT = /^[A-Z0-9]{1,3}-?[A-Z0-9]{2,6}$/
@@ -22,10 +23,29 @@ const emptyForm = {
     totalCycles: "0",
 }
 
+// Campos mostrados no resumo da confirmação, na ordem da tela
+const FIELD_LABELS = {
+    registration: "Matrícula",
+    serialNumber: "Número de série (MSN)",
+    manufacturer: "Fabricante",
+    model: "Modelo",
+    baseCode: "Base de manutenção",
+    status: "Status",
+    totalFlightHours: "Horas totais de voo (TSN)",
+    totalCycles: "Ciclos totais (CSN)",
+}
+
+// Valor comparável: ignora espaços nas pontas e aceita vírgula ou ponto nas horas
+const normalize = (field, value) => {
+    const text = value.trim()
+    return field === "totalFlightHours" ? text.replace(".", ",") : text
+}
+
 const AircraftForm = ({ token, aircraft, reference, onSaved, onCancel, onSessionExpired }) => {
     const isEdit = aircraft !== null
 
-    const [form, setForm] = useState(() => (isEdit ? {
+    // Valores originais, usados para saber se algo foi alterado na edição
+    const [initialForm] = useState(() => (isEdit ? {
         registration: aircraft.registration,
         manufacturer: aircraft.manufacturer,
         model: aircraft.model,
@@ -35,13 +55,49 @@ const AircraftForm = ({ token, aircraft, reference, onSaved, onCancel, onSession
         totalFlightHours: String(aircraft.totalFlightHours).replace(".", ","),
         totalCycles: String(aircraft.totalCycles),
     } : emptyForm))
+    const [form, setForm] = useState(initialForm)
     const [errors, setErrors] = useState({})
     const [formError, setFormError] = useState("")
     const [saving, setSaving] = useState(false)
+    const [confirming, setConfirming] = useState(false)
 
     // Foto: a escolhida só é enviada (ou a atual removida) ao salvar o formulário
     const photoField = usePhotoField(
         () => fetchAircraftPhoto(token, aircraft.id), isEdit && aircraft.hasPhoto, onSessionExpired)
+
+    const changedFields = isEdit
+        ? Object.keys(FIELD_LABELS).filter((f) => normalize(f, form[f]) !== normalize(f, initialForm[f]))
+        : []
+    const hasChanges = !isEdit || changedFields.length > 0 || photoField.pending
+
+    const displayValue = (field, value) => {
+        if (field === "status") {
+            const label = reference.statuses.find((s) => s.code === value)?.label ?? value
+            return <span className={`badge status-${value.toLowerCase()}`}>{label}</span>
+        }
+        if (field === "baseCode") {
+            const base = reference.bases.find((b) => b.code === value)
+            return base ? `${base.code} - ${base.name}` : value
+        }
+        if (field === "totalFlightHours") return `${normalize(field, value)} h`
+        return normalize(field, value)
+    }
+
+    // Linhas do resumo exibido na confirmação
+    const changes = changedFields.map((field) => ({
+        field,
+        label: FIELD_LABELS[field],
+        before: displayValue(field, initialForm[field]),
+        after: displayValue(field, form[field]),
+    }))
+    if (photoField.pending) {
+        changes.push({
+            field: "photo",
+            label: "Foto",
+            before: isEdit && aircraft.hasPhoto ? "Foto atual" : "Sem foto",
+            after: photoField.photo.status === "none" ? "Removida" : "Nova foto",
+        })
+    }
 
     const setField = (field, value) => {
         setForm((f) => ({ ...f, [field]: value }))
@@ -65,15 +121,21 @@ const AircraftForm = ({ token, aircraft, reference, onSaved, onCancel, onSession
         return e
     }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault()
-        if (saving) return
+        if (saving || !hasChanges) return
 
         const e = validate()
         setErrors(e)
         setFormError("")
         if (Object.keys(e).length > 0) return
 
+        // Na edição, o usuário confirma as alterações antes de enviar
+        if (isEdit) setConfirming(true)
+        else save()
+    }
+
+    const save = async () => {
         const payload = {
             registration: form.registration.trim(),
             manufacturer: form.manufacturer.trim(),
@@ -103,6 +165,7 @@ const AircraftForm = ({ token, aircraft, reference, onSaved, onCancel, onSession
             if (error.fields) setErrors(error.fields)
             setFormError(error.message)
             setSaving(false)
+            setConfirming(false)
         }
     }
 
@@ -230,10 +293,22 @@ const AircraftForm = ({ token, aircraft, reference, onSaved, onCancel, onSession
 
             <div className='form-actions'>
                 <button type="button" className='btn' onClick={onCancel} disabled={saving}>Cancelar</button>
-                <button type="submit" className='btn btn-primary' disabled={saving}>
+                <button type="submit" className='btn btn-primary' disabled={saving || !hasChanges}
+                    title={hasChanges ? undefined : "Nenhuma alteração para salvar"}>
                     {saving ? "Salvando..." : isEdit ? "Salvar alterações" : "Cadastrar aeronave"}
                 </button>
             </div>
+
+            {confirming && (
+                <ConfirmChangesModal
+                    aircraft={aircraft}
+                    changes={changes}
+                    warnFlightData={changedFields.includes("totalFlightHours") || changedFields.includes("totalCycles")}
+                    saving={saving}
+                    onConfirm={save}
+                    onClose={() => setConfirming(false)}
+                />
+            )}
         </form>
     )
 }

@@ -5,7 +5,7 @@ import "./Modal.css"
 
 // Modal com <dialog>: o navegador cuida do foco, do Esc e do fundo escurecido.
 // Fecha pelo X, pelo Esc ou clicando fora do conteúdo.
-const Modal = ({ title, subtitle, onClose, footer, children }) => {
+const Modal = ({ title, subtitle, onClose, footer, className, children }) => {
     const dialogRef = useRef(null)
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const Modal = ({ title, subtitle, onClose, footer, children }) => {
         // Clique fora do conteúdo (no fundo escurecido) fecha o modal
         <dialog
             ref={dialogRef}
-            className='modal'
+            className={className ? `modal ${className}` : 'modal'}
             aria-labelledby="modal-title"
             onCancel={(e) => { e.preventDefault(); onClose() }}
             onClick={(e) => { if (e.target === dialogRef.current) onClose() }}
@@ -45,6 +45,7 @@ Modal.propTypes = {
     subtitle: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     footer: PropTypes.node,
+    className: PropTypes.string,
     children: PropTypes.node.isRequired,
 }
 
