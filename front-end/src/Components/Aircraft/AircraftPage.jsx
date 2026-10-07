@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { fetchAircraft, fetchAircraftStatuses, fetchBases } from '../../services/api'
 import AircraftForm from './AircraftForm'
 import AircraftDetailsModal from './AircraftDetailsModal'
+import Toast from '../Shared/Toast'
 import "../Users/Users.css"
 import "./Aircraft.css"
 
@@ -20,7 +21,7 @@ const AircraftPage = ({ token, canRegister, onSessionExpired }) => {
     const [editing, setEditing] = useState(null)       // null = lista; { aircraft } = formulário
     const [reference, setReference] = useState(null)   // bases e status
     const [viewing, setViewing] = useState(null)       // aeronave aberta no modal
-    const [flash, setFlash] = useState("")
+    const [flash, setFlash] = useState(null)         // notificação de sucesso: { id, title, message }
     const [photoWarning, setPhotoWarning] = useState("")
 
     const handleError = useCallback((error, setMessage) => {
@@ -59,15 +60,24 @@ const AircraftPage = ({ token, canRegister, onSessionExpired }) => {
     // Os dados podem ter sido salvos mesmo que o envio da foto tenha falhado
     const handleSaved = (saved, created, photoError) => {
         setEditing(null)
-        setFlash(created ? `Aeronave ${saved.registration} cadastrada com sucesso.` : `Dados da aeronave ${saved.registration} atualizados.`)
+        setFlash({
+            id: Date.now(),
+            title: created ? "Aeronave cadastrada" : "Alteração realizada",
+            message: created
+                ? `A aeronave ${saved.registration} foi adicionada à frota.`
+                : `Os dados da aeronave ${saved.registration} foram salvos.`,
+        })
         setPhotoWarning(photoError
             ? `A foto não foi salva: ${photoError} Tente novamente em Editar.`
             : "")
         loadAircraft()
     }
 
+    // Estável entre renderizações, para o temporizador da notificação não reiniciar
+    const closeFlash = useCallback(() => setFlash(null), [])
+
     const clearMessages = () => {
-        setFlash("")
+        setFlash(null)
         setPhotoWarning("")
     }
 
@@ -104,7 +114,7 @@ const AircraftPage = ({ token, canRegister, onSessionExpired }) => {
                 )}
             </div>
 
-            {flash && <div className='alert alert-success' role="status">{flash}</div>}
+            {flash && <Toast key={flash.id} title={flash.title} message={flash.message} onClose={closeFlash} />}
             {photoWarning && <div className='alert alert-error' role="alert">{photoWarning}</div>}
 
             <div className='filters'>
