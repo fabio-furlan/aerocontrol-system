@@ -1,0 +1,29 @@
+/* Reset e regras globais mínimas */
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #0c1624;   /* fundo escuro enquanto a tela de login carrega a imagem */
+    color: var(--color-text);
+}
+
+/* Conteúdo só para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.nowrap {
+    white-space: nowrap;
+}

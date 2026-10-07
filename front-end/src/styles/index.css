@@ -1,0 +1,17 @@
+/*
+ * Ponto de entrada dos estilos globais, importado uma única vez em main.jsx.
+ * Ordem: fontes -> tokens -> base -> padrões de interface compartilhados.
+ * O estilo de cada componente e de cada tela fica ao lado do seu .jsx.
+ */
+@import "./fonts/fonts.css";
+@import "./fonts/typography.css";
+@import "./tokens.css";
+@import "./base.css";
+
+@import "./ui/page.css";
+@import "./ui/alert.css";
+@import "./ui/badge.css";
+@import "./ui/filters.css";
+@import "./ui/table.css";
+@import "./ui/form.css";
+@import "./ui/details.css";

@@ -1,0 +1,64 @@
+/*
+ * Tokens do design system: cores, bordas, sombras e espaçamentos.
+ * Componentes e telas usam apenas estas variáveis, nunca cores soltas.
+ */
+:root {
+    /* Marca */
+    --color-primary: #1f3a5f;
+    --color-primary-hover: #17304f;
+    --color-primary-active: #10243d;
+    --color-primary-soft: #e8eef6;      /* fundo de item selecionado */
+    --color-accent: #e0a526;            /* âmbar da faixa de identificação */
+
+    /* Texto */
+    --color-text: #1b2430;
+    --color-text-muted: #5b6776;
+    --color-text-subtle: #7d8896;
+    --color-text-inverse: #ffffff;
+
+    /* Superfícies */
+    --color-background: #eceff3;        /* fundo da área logada */
+    --color-surface: #ffffff;
+    --color-surface-muted: #f7f9fb;     /* rodapés, cabeçalhos de tabela */
+    --color-hover: #f1f4f8;
+
+    /* Bordas */
+    --color-border: #d3dae3;
+    --color-border-strong: #aeb8c5;     /* campos e botões */
+    --color-divider: #e8ecf1;
+
+    /* Foco (acessibilidade) */
+    --color-focus: #2f6db5;
+
+    /* Estados */
+    --color-success: #2e7d4f;
+    --color-success-strong: #1f5a37;
+    --color-success-soft: #e3f2e8;
+    --color-success-border: #b6dcc3;
+
+    --color-danger: #b3261e;
+    --color-danger-strong: #8c1d18;
+    --color-danger-soft: #fdf1f0;
+    --color-danger-border: #e8b4ae;
+
+    --color-warning-strong: #6b4a00;
+    --color-warning-soft: #fdf6e7;
+    --color-warning-border: #f0d9a4;
+
+    /* Formas */
+    --radius-sm: 3px;
+    --radius-md: 4px;
+    --radius-full: 999px;
+
+    --shadow-sm: 0 1px 3px rgba(15, 30, 50, 0.3);
+    --shadow-md: 0 10px 30px rgba(15, 30, 50, 0.18);
+    --shadow-lg: 0 12px 40px rgba(15, 30, 50, 0.25);
+
+    /* Alturas de controles (campos e botões) */
+    --control-height-sm: 30px;
+    --control-height-md: 38px;
+    --control-height-lg: 46px;
+
+    /* Camadas */
+    --z-toast: 1000;
+}

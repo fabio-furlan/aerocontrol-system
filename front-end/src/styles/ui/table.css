@@ -1,0 +1,90 @@
+/* Tabelas de listagem (usuários, aeronaves) */
+
+.table-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-md);
+}
+
+.data-table th {
+    padding: 11px 14px;
+    background: #f5f7fa;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-align: left;
+    color: #3d4a5a;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--color-divider);
+    vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background: #fafbfd;
+}
+
+.data-table tr.inactive td {
+    color: var(--color-text-subtle);
+}
+
+/* Colunas numéricas alinhadas à direita */
+.data-table .num {
+    text-align: right;
+}
+
+/* Segunda linha da célula (ex.: e-mail abaixo do nome) */
+.cell-sub {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+/* Coluna de ações (Visualizar, Editar...) */
+.actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.actions .btn + .btn,
+.actions .btn + .self-tag {
+    margin-left: 6px;
+}
+
+.row-error {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--font-size-xs);
+    color: var(--color-danger);
+    white-space: normal;
+}
+
+/* Carregando, lista vazia ou erro */
+.table-message {
+    padding: 28px 14px;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.table-count {
+    margin-top: 10px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}

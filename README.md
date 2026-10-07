@@ -75,6 +75,51 @@ Regras:
 - `shared/` guarda apenas infraestrutura comum, nunca regra de negócio.
 - Um novo domínio (ex.: componentes, ordens de serviço) vira um novo módulo com as mesmas camadas.
 
+### Organização do front-end
+
+O front-end separa **telas** (`pages/`) de um **design system** reutilizável (`components/` + `styles/`).
+
+```
+front-end/src/
+├── main.jsx              # ponto de entrada
+├── app/App.jsx           # raiz: tela de login ou área logada, conforme a sessão
+├── pages/                # uma pasta por tela, com nome em português
+│   ├── login/            # PaginaLogin.jsx + PaginaLogin.css
+│   ├── inicio/           # PaginaInicio
+│   ├── aeronaves/        # PaginaAeronaves + components/ (formulário) + modals/ (modais da tela)
+│   └── usuarios/         # PaginaUsuarios + components/ + modals/
+├── components/           # design system: peças reutilizáveis, sem regra de negócio
+│   ├── botoes/           # Botao, BotaoIcone, BotaoLink
+│   ├── modal/            # Modal base
+│   ├── avisos/           # Notificacao (flutuante) e Alerta (aviso na página)
+│   ├── foto/             # Avatar, MolduraFoto, SeletorFoto
+│   ├── marca/            # Logo e RelogioBrasilia
+│   └── layout/           # AppShell: barra do topo e menu lateral
+├── styles/
+│   ├── fonts/            # fonte IBM Plex Sans (self-hosted) e escala tipográfica
+│   ├── tokens.css        # cores, bordas, sombras e alturas
+│   ├── base.css          # reset e regras globais
+│   └── ui/               # padrões compartilhados: cabeçalho, tabela, filtros, formulário, avisos
+├── hooks/                # usePhoto, usePhotoField
+├── services/             # api/ (cliente HTTP por domínio) e session.js
+├── utils/                # formatters (datas e números pt-BR), regras da foto
+└── assets/images/
+```
+
+Regras:
+
+- **Botões:** sempre `Botao`, `BotaoIcone` ou `BotaoLink` de `components/botoes`, nunca `<button className="btn">`.
+  `Botao` tem as variantes `primary`, `secondary`, `danger` e `ghost-light`, e os tamanhos `sm`, `md` e `lg`.
+- **Cores e fontes:** só pelos tokens (`var(--color-*)`, `var(--font-size-*)`, `var(--font-weight-*)`),
+  nunca valores soltos no CSS.
+- **Telas:** cada tela tem a sua pasta em `pages/` com nome em português (`usuarios/`, `aeronaves/`), e o
+  componente da tela segue o padrão `Pagina<Nome>` (ex.: `PaginaUsuarios.jsx`).
+- **Modais:** o `Modal` base fica em `components/modal`; o modal de uma tela fica em `pages/<tela>/modals/`.
+- **Imports:** `@/` aponta para `src/` (ex.: `import { Botao } from '@/components/botoes'`); caminho relativo
+  só dentro da mesma pasta.
+- **Estilos:** o CSS de cada componente e de cada tela fica ao lado do `.jsx`; o que é compartilhado entre
+  telas fica em `styles/ui/`.
+
 ## Como rodar
 
 ### Pré-requisitos

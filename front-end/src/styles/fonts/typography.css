@@ -1,0 +1,49 @@
+/*
+ * Escala tipográfica do design system.
+ * Use sempre estes tokens em vez de valores soltos em px.
+ */
+:root {
+    --font-family-base: "IBM Plex Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    /* Tamanhos */
+    --font-size-2xs: 11px;   /* selos em caixa alta */
+    --font-size-xs: 12px;    /* legendas, badges, textos auxiliares de tabela */
+    --font-size-sm: 13px;    /* dicas, mensagens de campo, botões pequenos */
+    --font-size-md: 14px;    /* texto padrão da interface */
+    --font-size-lg: 15px;    /* campos de formulário, texto de destaque */
+    --font-size-xl: 16px;    /* títulos de seção e de card */
+    --font-size-2xl: 20px;   /* títulos de modal */
+    --font-size-3xl: 24px;   /* títulos de página */
+    --font-size-4xl: 26px;   /* títulos de destaque (login, boas-vindas) */
+
+    /* Pesos */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Altura de linha */
+    --line-height-tight: 1.2;
+    --line-height-base: 1.4;
+    --line-height-relaxed: 1.55;
+}
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-base);
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+/* Números alinhados em colunas (horas, ciclos, matrículas) */
+.mono {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.3px;
+}
