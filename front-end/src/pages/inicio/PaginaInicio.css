@@ -1,0 +1,13 @@
+.home-page {
+    max-width: 1100px;
+}
+
+.home-page h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-semibold);
+}
+
+.home-subtitle {
+    margin-top: 4px;
+    color: var(--color-text-muted);
+}

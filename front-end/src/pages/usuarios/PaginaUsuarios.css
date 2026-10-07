@@ -1,0 +1,31 @@
+/* Tela de usuários: só o que é específico dela (o resto vem de styles/ui) */
+
+/* Nome com a foto (avatar) ao lado */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* "Você" no lugar do botão Desativar, na linha do próprio usuário */
+.self-tag {
+    display: inline-block;
+    width: 78px;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* Confirmação na própria linha: "Desativar? Sim / Não" */
+.row-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Uma base por linha no modal de visualização */
+.base-line {
+    display: block;
+}

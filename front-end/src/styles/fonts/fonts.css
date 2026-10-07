@@ -1,0 +1,9 @@
+/*
+ * Fonte da aplicação: IBM Plex Sans, servida pelo próprio projeto (@fontsource),
+ * sem depender do Google Fonts (funciona em redes internas e sem internet).
+ * Somente os pesos usados pelo design system são carregados.
+ */
+@import "@fontsource/ibm-plex-sans/latin-400.css";
+@import "@fontsource/ibm-plex-sans/latin-500.css";
+@import "@fontsource/ibm-plex-sans/latin-600.css";
+@import "@fontsource/ibm-plex-sans/latin-700.css";

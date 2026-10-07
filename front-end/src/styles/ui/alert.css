@@ -1,0 +1,32 @@
+/* Avisos dentro da página (erros de formulário, falhas de envio) */
+
+.alert {
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    border: 1px solid;
+    border-left-width: 4px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-base);
+}
+
+.alert-success {
+    background: var(--color-success-soft);
+    border-color: var(--color-success-border);
+    border-left-color: var(--color-success);
+    color: var(--color-success-strong);
+}
+
+.alert-error {
+    background: var(--color-danger-soft);
+    border-color: var(--color-danger-border);
+    border-left-color: var(--color-danger);
+    color: var(--color-danger-strong);
+}
+
+.alert-warning {
+    background: var(--color-warning-soft);
+    border-color: var(--color-warning-border);
+    border-left-color: var(--color-accent);
+    color: var(--color-warning-strong);
+}

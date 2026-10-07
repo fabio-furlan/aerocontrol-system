@@ -1,0 +1,15 @@
+/* Identidade visual: monograma FB e relógio de Brasília (barra do topo e tela de login) */
+
+.logo-mark {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.clock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: var(--font-weight-medium);
+    font-variant-numeric: tabular-nums;
+}
